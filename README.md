@@ -1,5 +1,53 @@
 # Frame
 
-A personal film journal: manual ratings, short reviews and filters, stored only in your browser. No account or film-search API.
+A personal film journal for manual entries, ratings from 0–10, short reviews, and filtering by score, genre or date watched. Includes editing, confirmed removal, title search, sorting, statistics, and a separate sample journal. Film-search data is deferred.
 
-Implementation and verification are in progress on issue #1.
+## Run the system
+
+Prerequisites: Python 3 (tested 3.13.3). Node 24 (tested 24.1.0) and npm are needed only for the checks and command shortcuts. No dependency installation, keys, account, VPN or external service is required.
+
+```sh
+git clone https://github.com/SadaqueKhanProjects/movie-rating-web-app.git
+cd movie-rating-web-app
+npm start
+```
+
+Authenticate to GitHub to clone this private repository. Open **http://127.0.0.1:4173**. You should see the empty Frame journal; choose **Log a film** or explore the labelled sample journal. Stop the server with **Ctrl+C** in its terminal.
+
+## Command palette
+
+Run from the checkout root:
+
+| Task | Command | Expected result |
+| --- | --- | --- |
+| Start | `npm start` | Static local server on port 4173 |
+| Start without Node | `python3 -m http.server 4173 --bind 127.0.0.1 --directory dist` | Same server |
+| Test | `npm test` | Domain, filter and storage tests pass |
+| Syntax check | `npm run check` | JavaScript files parse |
+| Stop | Ctrl+C in the server terminal | Server exits |
+
+There is no dependency installation or build step. `dist/` contains the maintained browser source and ready-to-serve assets. Hosting/deployment requires separate authorization. Private GitHub CI has not been configured because a hard block on paid overages was not verified; use the local checks before merging. No paid infrastructure or hosted app service was created.
+
+## Data and privacy
+
+Entries live in this browser profile's `localStorage`, scoped to this exact origin (scheme, host, port). Use the same address each time: `localhost`, another port, a different browser, and another device each have separate journals. Clearing site data or private-browsing storage can permanently remove entries. There is no cloud sync, encryption layer, export/import or backup in this release. Anyone using this browser profile can read the journal.
+
+The first visit needs the local server. After the app shell has cached successfully, this origin can reload and save entries with the server stopped. Offline availability depends on browser service-worker support and retained site storage; opening the HTML as a `file:` URL is unsupported. Fonts, artwork, scripts and styles are local. The app makes no external requests and has no analytics. The sample journal never gets saved into your entries.
+
+Failed saves keep the form and draft open and leave the last saved journal intact. Unsupported/corrupt stored data is preserved and editing is blocked. Observed changes from another tab refresh the collection; stale open forms cannot overwrite a changed storage snapshot. This is best-effort conflict detection: localStorage has no cross-tab transaction, so avoid simultaneous submissions in multiple tabs. See [architecture and recovery](docs/architecture.md).
+
+## Architecture
+
+```mermaid
+flowchart LR
+  User[Film form and filters] --> UI[app.js: DOM and interaction]
+  UI --> Core[core.js: validation and filtering]
+  Core --> Store[Browser localStorage: journal v1]
+  UI --> SW[sw.js: local app-shell cache]
+```
+
+`index.html` and `styles.css` provide responsive, keyboard-accessible presentation. `core.js` owns validation, storage serialization and filter rules. `app.js` renders text through DOM text nodes, without interpreting titles or reviews as HTML. Film-search integration can later map search results to the same validated form for user review; it must not overwrite manually entered data.
+
+## Verification
+
+See [validation evidence and limits](docs/validation.md). Local tests and syntax checks passed, and Chrome was used for create/edit/filter/delete/reload and offline checks. A 390px iframe was visually inspected; this is not physical-device testing. No deployment or remote CI run is claimed.
