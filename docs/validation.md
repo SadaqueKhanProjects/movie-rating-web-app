@@ -13,3 +13,5 @@ Environment: macOS, Node 24.1.0, Python 3.13.3, Chrome desktop. All entries used
 Limits: storage failures/corruption/conflicts are covered at the domain boundary using storage doubles, not injected into the real browser profile. Two tabs submitting at exactly the same time are not transactionally coordinated. No dedicated screen-reader, physical-device, full accessibility audit or browser matrix. Offline first visit cannot work before the assets are cached. No external film search, server, backups, accounts, hosted deployment or remote CI was introduced.
 
 No subscriptions, APIs, third-party dependencies or hosting were added. GitHub private repository delivery uses existing authentication. Private GitHub Actions workflows were deliberately omitted because an effective hard overage spending block could not be verified; local validation supports the PR. This is not a claim about the user's account-wide bill or shared allowance.
+
+Source formatting used Prettier 3.6.2 from the npm registry in an isolated temporary cache, with no package added to the app.
