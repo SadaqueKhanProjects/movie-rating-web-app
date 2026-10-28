@@ -1,4 +1,4 @@
-const CACHE = "frame-shell-v2";
+const CACHE = "frame-shell-v4";
 const ASSETS = [
   "./",
   "./index.html",

@@ -1,5 +1,7 @@
 # Validation evidence — 28 October 2026
 
+## Initial release
+
 Environment: macOS, Node 24.1.0, Python 3.13.3, Chrome desktop. All entries used for acceptance checks were synthetic and removed afterwards.
 
 - `npm test`: 9 passing tests covering create/reload/edit/delete serialization; 0/10 boundaries and invalid scores; title/review/genre/date rules; corruption, unsupported schemas and duplicate IDs; failed write preservation; intervening storage changes; combined inclusive filtering and sorting; access-denied reads; literal untrusted text.
@@ -15,3 +17,15 @@ Limits: storage failures/corruption/conflicts are covered at the domain boundary
 No subscriptions, APIs, third-party dependencies or hosting were added. GitHub private repository delivery uses existing authentication. Private GitHub Actions workflows were deliberately omitted because an effective hard overage spending block could not be verified; local validation supports the PR. This is not a claim about the user's account-wide bill or shared allowance.
 
 Source formatting used Prettier 3.6.2 from the npm registry in an isolated temporary cache, with no package added to the app.
+
+
+## Diary redesign — issue #3
+
+- Existing nine tests and syntax checks pass before and after the redesign. The storage key, schema, validation and filter domain rules are unchanged.
+- In-app browser: created a synthetic 8.5 Drama entry, edited it through the entry options to 0, and confirmed the saved result after reload.
+- Combined sample filters: Sci-Fi + 9–10 + watched from/through 18 September returned only Interstellar. Clear filters restored the collection.
+- Keyboard: Enter opened entry actions; Escape closed them. Cancelling removal preserved the entry and returned focus to its options button. Saving a new entry returned focus to Log a film. The synthetic entry was removed through confirmation after verification.
+- Visual checks: diary at the normal 755 CSS-pixel viewport and narrow 433 CSS-pixel viewport (the browser's measured inner width after its viewport override). Narrow filters and the logging dialog remained usable; document width matched the viewport without horizontal overflow. This is desktop browser layout evidence, not a physical-device test or accessibility audit.
+- The service-worker cache version was advanced for the redesigned shell. The browser loaded the updated interface without clearing localStorage. No new dependencies, remote workflows or deployment were introduced.
+
+Interaction choices: put the diary first; use consistent date/film/score columns for scanning; reveal secondary filters and entry actions on demand; keep field labels visible; make action targets at least 44px; provide visible keyboard focus, Escape behavior and logical focus restoration; preserve confirmation for destructive removal. These are design decisions validated by the interactions above, not a user research study.
