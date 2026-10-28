@@ -8,7 +8,8 @@ let films = [],
   draftRaw = null,
   deleting = null,
   deleteRaw = null,
-  toastTimer;
+  toastTimer,
+  returnFilmId = null;
 const dialog = $("#film-dialog"),
   form = $("#film-form");
 function announce(message) {
@@ -53,81 +54,74 @@ function filters() {
     sort: $("#sort").value,
   };
 }
-const palettes = [
-  ["#977c81", "#5f555f"],
-  ["#314e54", "#a3a17c"],
-  ["#9c9c77", "#d7c59d"],
-  ["#6c8b7d", "#b4cbb0"],
-  ["#a27a59", "#d0ae84"],
-  ["#596577", "#a0a8b8"],
-];
 function el(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = text;
   return node;
 }
-function card(f) {
-  const article = el("article", "film-card");
-  const art = el("div", "film-art");
-  art.setAttribute("aria-hidden", "true");
-  const hash = [...f.title].reduce((sum, c) => sum + c.codePointAt(0), 0);
-  const palette = palettes[hash % palettes.length];
-  art.style.setProperty("--art-bg", palette[0]);
-  art.style.setProperty("--art-fg", palette[1]);
-  art.append(
-    el("span", "art-caption", "A FRAME IN TIME"),
-    el(
-      "span",
-      "art-initial",
-      f.title
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((w) => w[0])
-        .join(""),
-    ),
-  );
-  const badge = el("div", "score-badge");
-  badge.append(
-    el("span", "", "★"),
-    document.createTextNode(`${f.score.toFixed(1)}`),
-  );
-  art.append(badge);
-  const body = el("div", "card-body");
-  body.append(el("h3", "", f.title));
-  const accessibleScore = el(
-    "span",
-    "genre-tag",
-    `${f.genre} · ${f.score.toFixed(1)} / 10`,
-  );
-  body.append(accessibleScore, el("p", "review", f.review));
-  const bottom = el("div", "card-bottom");
-  const time = el(
-    "time",
-    "",
+function entry(f) {
+  const article = el("article", "film-entry");
+  const watched = new Date(`${f.watched}T12:00:00`);
+  const time = el("time", "watched-date");
+  time.dateTime = f.watched;
+  time.setAttribute(
+    "aria-label",
     new Intl.DateTimeFormat("en-GB", {
       day: "numeric",
-      month: "short",
+      month: "long",
       year: "numeric",
-    }).format(new Date(`${f.watched}T12:00:00`)),
+    }).format(watched),
   );
-  time.dateTime = f.watched;
-  bottom.append(time);
+  time.append(
+    el(
+      "strong",
+      "",
+      new Intl.DateTimeFormat("en-GB", { day: "2-digit" }).format(watched),
+    ),
+    el(
+      "span",
+      "",
+      new Intl.DateTimeFormat("en-GB", {
+        month: "short",
+        year: "numeric",
+      }).format(watched),
+    ),
+  );
+  const body = el("div", "entry-body");
+  body.append(
+    el("h2", "", f.title),
+    el("span", "entry-genre", f.genre),
+    el("p", "review", f.review),
+  );
+  const score = el("div", "entry-score");
+  score.setAttribute("aria-label", `Score: ${f.score.toFixed(1)} out of 10`);
+  score.append(el("strong", "", f.score.toFixed(1)), el("span", "", "/ 10"));
+  article.append(time, body, score);
   if (!demo) {
-    const actions = el("div", "card-actions");
-    const edit = el("button", "", "Edit"),
-      remove = el("button", "", "Remove");
+    const options = el("details", "entry-options");
+    const trigger = el("summary", "", "•••");
+    trigger.setAttribute("aria-label", `Options for ${f.title}`);
+    trigger.dataset.filmId = f.id;
+    const menu = el("div", "option-menu");
+    const edit = el("button", "", "Edit film"),
+      remove = el("button", "", "Remove film");
     edit.setAttribute("aria-label", `Edit ${f.title}`);
     remove.setAttribute("aria-label", `Remove ${f.title}`);
     edit.disabled = blocked;
     remove.disabled = blocked;
-    edit.onclick = () => openForm(f);
-    remove.onclick = () => openDelete(f);
-    actions.append(edit, remove);
-    bottom.append(actions);
+    edit.onclick = () => {
+      options.open = false;
+      openForm(f);
+    };
+    remove.onclick = () => {
+      options.open = false;
+      openDelete(f);
+    };
+    options.append(trigger, menu);
+    menu.append(edit, remove);
+    article.append(options);
   }
-  body.append(bottom);
-  article.append(art, body);
   return article;
 }
 function render() {
@@ -135,20 +129,17 @@ function render() {
     f = filters();
   const visible = filterFilms(source, f);
   $("#total").textContent = source.length;
-  $("#count").textContent = source.length;
   $("#average").textContent = source.length
     ? (source.reduce((s, f) => s + f.score, 0) / source.length).toFixed(1)
     : "—";
   $("#month").textContent = source.filter((f) =>
     f.watched.startsWith(today().slice(0, 7)),
   ).length;
-  $("#journal-title").firstChild.textContent = demo
-    ? "Sample film journal "
-    : "Your film journal ";
+  $("#journal-title").textContent = demo ? "Sample diary" : "Watch diary";
   $("#demo-notice").hidden = !demo;
   $("#demo-toggle").textContent = demo
-    ? "Back to my journal ↗"
-    : "Explore a sample journal ↗";
+    ? "Back to my diary"
+    : "View a sample diary";
   const active = !!(
     f.query ||
     f.genre ||
@@ -158,14 +149,23 @@ function render() {
     f.to
   );
   $("#clear-filters").hidden = !active;
+  const filterCount =
+    Number(!!f.genre) +
+    Number(f.min !== 0 || f.max !== 10) +
+    Number(!!(f.from || f.to));
+  $("#filter-label").textContent = filterCount
+    ? `Filters (${filterCount})`
+    : "Filters";
+  $("#date-error").hidden = !(f.from && f.to && f.from > f.to);
   $("#date-error").textContent =
     f.from && f.to && f.from > f.to
       ? "The start date is after the end date."
       : "";
   $("#results").textContent = source.length
     ? `${visible.length} of ${source.length} film${source.length === 1 ? "" : "s"}${demo ? " · Sample data" : ""}`
-    : "Your collection starts here";
-  $("#films").replaceChildren(...visible.map(card));
+    : "No films logged yet";
+  $("#films").replaceChildren(...visible.map(entry));
+  $("#entry-head").hidden = visible.length === 0;
   $("#empty").hidden = source.length > 0 || blocked;
   $("#no-results").hidden = !source.length || visible.length > 0;
 }
@@ -189,11 +189,32 @@ for (const id of [
   $("#" + id).addEventListener("input", render);
 $("#clear-filters").onclick = reset;
 $("#reset-results").onclick = reset;
-$("#date-toggle").onclick = () => {
-  const shown = $("#date-filters").hidden;
-  $("#date-filters").hidden = !shown;
-  $("#date-toggle").setAttribute("aria-expanded", String(shown));
+$("#filter-toggle").onclick = () => {
+  const shown = $("#filters").hidden;
+  $("#filters").hidden = !shown;
+  $("#filter-toggle").setAttribute("aria-expanded", String(shown));
 };
+// Native details keeps entry actions keyboard-accessible. Close other action menus.
+document.addEventListener("click", (event) => {
+  document.querySelectorAll(".entry-options[open]").forEach((options) => {
+    if (!options.contains(event.target)) options.open = false;
+  });
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || dialog.open || $("#delete-dialog").open) return;
+  document.querySelectorAll(".entry-options[open]").forEach((options) => {
+    options.open = false;
+    options.querySelector("summary").focus();
+  });
+});
+function restoreFocus() {
+  const trigger = [...document.querySelectorAll(".entry-options summary")].find(
+    (node) => node.dataset.filmId === returnFilmId,
+  );
+  (trigger || document.querySelector(".topbar .add-button")).focus();
+}
+dialog.addEventListener("close", restoreFocus);
+$("#delete-dialog").addEventListener("close", restoreFocus);
 function toggleDemo() {
   demo = !demo;
   reset();
@@ -213,6 +234,7 @@ function openForm(film = null) {
     }
   }
   editing = film?.id ?? null;
+  returnFilmId = editing;
   draftRaw = raw;
   form.reset();
   $("#form-error").hidden = true;
@@ -253,11 +275,7 @@ form.onsubmit = (event) => {
     demo = false;
     reset();
     dialog.close();
-    announce(
-      editing
-        ? "Film updated. A fresh take."
-        : "Film saved. Another one for the collection.",
-    );
+    announce(editing ? "Film updated." : "Film saved.");
   } catch (error) {
     $("#form-error").textContent =
       `Couldn't save: ${error.message} Your draft has been kept. Check browser storage permissions or available space if needed.`;
@@ -266,6 +284,7 @@ form.onsubmit = (event) => {
 };
 function openDelete(film) {
   deleting = film;
+  returnFilmId = film.id;
   deleteRaw = raw;
   $("#delete-description").textContent =
     `“${film.title}” and your review will be removed.`;

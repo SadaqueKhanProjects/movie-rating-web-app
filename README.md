@@ -2,6 +2,10 @@
 
 A personal film journal for manual entries, ratings from 0–10, short reviews, and filtering by score, genre or date watched. Includes editing, confirmed removal, title search, sorting, statistics, and a separate sample journal. Film-search data is deferred.
 
+## Interface
+
+Frame opens directly into a dark watch diary: dates on the left, reviews in the middle, and scores on the right. Search is always available; genre, score and date filters appear behind **Filters**, with an active-filter count. Each entry’s **•••** button opens Edit and Remove. The short logging form supports keyboard input, returns focus when closed, and keeps confirmation for removal. Small screens put the review below the title so it has room to read.
+
 ## Run the system
 
 Prerequisites: Python 3 (tested 3.13.3). Node 24 (tested 24.1.0) and npm are needed only for the checks and command shortcuts. No dependency installation, keys, account, VPN or external service is required.
@@ -50,4 +54,4 @@ flowchart LR
 
 ## Verification
 
-See [validation evidence and limits](docs/validation.md). Local tests and syntax checks passed, and Chrome was used for create/edit/filter/delete/reload and offline checks. A 390px iframe was visually inspected; this is not physical-device testing. No deployment or remote CI run is claimed.
+See [validation evidence and limits](docs/validation.md). All nine domain/storage tests and JavaScript syntax checks pass. The redesigned UI was checked in the in-app browser at desktop and narrow widths, including combined filters, creating/editing, reload persistence, action menus, keyboard Escape/focus return, and removal confirmation/cancellation. The original offline workflow was checked in Chrome. No physical-device test, deployment or remote CI run is claimed.
