@@ -1,0 +1,14 @@
+{
+  "name": "movie-rating-web-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "start": "python3 -m http.server 4173 --bind 127.0.0.1 --directory dist",
+    "test": "node --test",
+    "check": "node --check dist/app.js && node --check dist/core.js && node --check dist/sw.js"
+  }
+}

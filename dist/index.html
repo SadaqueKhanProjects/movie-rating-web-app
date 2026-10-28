@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f7f3" />
+    <meta
+      name="description"
+      content="Frame is your personal film journal. Keep the films, ratings and moments that stay with you."
+    />
+    <title>Frame · Your life in films</title>
+    <link rel="icon" href="icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#journal">Skip to journal</a>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Frame home"
+        ><span class="brand-icon" aria-hidden="true">f</span>frame<span
+          class="brand-dot"
+          >.</span
+        ></a
+      ><span class="nav-active">My film journal</span
+      ><span class="private"><span></span> Personal, by design</span>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">A LITTLE JOURNAL FOR THE BIG SCREEN</p>
+          <h1 id="hero-title">Some films<br />stay with you<span>.</span></h1>
+          <p class="intro">
+            Keep the ones that do. Rate what you watch,<br class="desktop" />
+            collect your thoughts, and find your next rewatch.
+          </p>
+          <button class="primary add-button">
+            <span aria-hidden="true">＋</span> Log a film
+          </button>
+          <p class="local-note">
+            <span aria-hidden="true">◈</span> Your journal lives in this
+            browser. Just for you.
+          </p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <span class="art-star star-one">✳</span
+          ><span class="art-star star-two">✧</span>
+          <div class="ticket ticket-back">
+            <div class="ticket-top">THE GOOD ONES<br />ARE WORTH KEEPING.</div>
+            <div class="ticket-stub">ADMIT ONE <span>✦</span></div>
+          </div>
+          <div class="ticket ticket-front">
+            <div class="ticket-top">
+              <span class="ticket-label">FRAME PICTURE HOUSE</span>
+              <div class="ticket-screen">
+                <div class="sun"></div>
+                <div class="mountain mountain-one"></div>
+                <div class="mountain mountain-two"></div>
+              </div>
+              <span class="ticket-title">A life in cinema.</span
+              ><span class="ticket-sub">ONE FILM AT A TIME</span>
+            </div>
+            <div class="ticket-stub">
+              <span>YOUR SEAT IS SAVED</span><span class="barcode"></span>
+            </div>
+          </div>
+          <div class="rating-sticker">
+            ★ <strong>10</strong><small>/ 10 kind of feeling</small>
+          </div>
+        </div>
+      </section>
+      <section class="stats" aria-label="Journal statistics">
+        <div>
+          <span class="stat-icon" aria-hidden="true">▤</span>
+          <div><strong id="total">0</strong><span>films watched</span></div>
+        </div>
+        <div>
+          <span class="stat-icon" aria-hidden="true">☆</span>
+          <div><strong id="average">—</strong><span>average rating</span></div>
+        </div>
+        <div>
+          <span class="stat-icon" aria-hidden="true">◷</span>
+          <div>
+            <strong id="month">0</strong><span>watched this month</span>
+          </div>
+        </div>
+        <p>Every film has a story.<br /><em>This is yours.</em></p>
+      </section>
+      <section id="journal" aria-labelledby="journal-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE PERSONAL COLLECTION</p>
+            <h2 id="journal-title">
+              Your film journal <span id="count">0</span>
+            </h2>
+          </div>
+          <button class="text-button" id="demo-toggle">
+            Explore a sample journal ↗
+          </button>
+        </div>
+        <div class="notice" id="demo-notice" hidden>
+          You're exploring a sample journal. These fictional reviews aren't
+          saved to your collection.
+          <button id="leave-demo">Back to my journal</button>
+        </div>
+        <div class="error-banner" id="storage-error" role="alert" hidden></div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <span aria-hidden="true">⌕</span
+            ><input
+              id="search"
+              type="search"
+              placeholder="Find a film in your journal…"
+              aria-label="Search film titles"
+            />
+          </div>
+          <label class="filter-label"
+            >Genre<select id="genre-filter">
+              <option value="">All genres</option>
+            </select></label
+          ><label class="filter-label"
+            >Rating<select id="score-filter">
+              <option value="all">All scores</option>
+              <option value="9-10">9–10 · Favourites</option>
+              <option value="7-8.9">7–8.9 · Worth a watch</option>
+              <option value="5-6.9">5–6.9 · Mixed feelings</option>
+              <option value="0-4.9">0–4.9 · Not for me</option>
+            </select></label
+          ><button
+            class="date-button"
+            id="date-toggle"
+            aria-expanded="false"
+            aria-controls="date-filters"
+          >
+            ◷ Date watched
+          </button>
+        </div>
+        <div class="date-filters" id="date-filters" hidden>
+          <label>Watched from<input type="date" id="from-date" /></label
+          ><label>Watched through<input type="date" id="to-date" /></label
+          ><span id="date-error" role="status"></span>
+        </div>
+        <div class="results-bar">
+          <span id="results" role="status">Your collection starts here</span
+          ><button class="text-button" id="clear-filters" hidden>
+            Clear filters ×</button
+          ><label
+            >Sort by
+            <select id="sort" aria-label="Sort films">
+              <option value="newest">Recently watched</option>
+              <option value="oldest">Oldest watched</option>
+              <option value="highest">Highest rated</option>
+              <option value="lowest">Lowest rated</option>
+              <option value="title">Film title A–Z</option>
+            </select></label
+          >
+        </div>
+        <div id="films" class="film-grid"></div>
+        <div class="empty" id="empty">
+          <span class="empty-icon" aria-hidden="true">▧</span>
+          <h3>The opening scene is yours.</h3>
+          <p>
+            What did you watch? Start with a film you can't stop thinking about.
+          </p>
+          <button class="primary add-button">＋ Log your first film</button>
+        </div>
+        <div class="empty" id="no-results" hidden>
+          <span class="empty-icon" aria-hidden="true">⌕</span>
+          <h3>No films in this frame.</h3>
+          <p>Try another title or give your filters a little more room.</p>
+          <button class="secondary" id="reset-results">
+            Clear all filters
+          </button>
+        </div>
+      </section>
+      <div class="closing-note">
+        <span aria-hidden="true">✦</span> For the credits that roll, and the
+        feelings that don't.
+      </div>
+    </main>
+    <footer>
+      <span class="footer-brand">frame.</span
+      ><span>A small space for your love of cinema.</span
+      ><span>Stored on your device · No account needed</span>
+    </footer>
+    <dialog id="film-dialog" aria-labelledby="form-title">
+      <form id="film-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">ADD TO YOUR COLLECTION</p>
+            <h2 id="form-title">Log a film</h2>
+          </div>
+          <button type="button" class="close" aria-label="Close form">×</button>
+        </div>
+        <p class="form-intro">
+          The film, the feeling, and a few words to remember it by.
+        </p>
+        <label
+          >Film title<input
+            name="title"
+            id="title-input"
+            required
+            maxlength="120"
+            placeholder="What did you watch?"
+            autocomplete="off"
+        /></label>
+        <div class="form-row">
+          <label
+            >Genre<select name="genre" id="genre-input" required>
+              <option value="">Choose a genre</option>
+            </select></label
+          ><label
+            >Date watched<input
+              name="watched"
+              id="watched-input"
+              type="date"
+              required
+              min="1888-01-01"
+          /></label>
+        </div>
+        <label
+          >Your rating <span class="field-hint">out of 10</span>
+          <div class="rating-input">
+            <input
+              name="score"
+              id="score-input"
+              type="number"
+              min="0"
+              max="10"
+              step="0.1"
+              required
+              placeholder="8.5"
+            /><span> / 10 <span aria-hidden="true">★</span></span>
+          </div></label
+        ><label
+          >Short review<textarea
+            name="review"
+            id="review-input"
+            required
+            maxlength="600"
+            rows="4"
+            placeholder="What stayed with you?"
+          ></textarea>
+        </label>
+        <p class="field-hint review-count">
+          <span id="review-count">0</span> / 600 characters
+        </p>
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="button" class="secondary close">Cancel</button
+          ><button type="submit" class="primary">
+            Save to journal <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="delete-dialog" aria-labelledby="delete-title">
+      <h2 id="delete-title">Remove this film?</h2>
+      <p id="delete-description"></p>
+      <p>This removes the rating and review from this browser.</p>
+      <p id="delete-error" class="form-error" role="alert" hidden></p>
+      <div class="form-actions">
+        <button class="secondary" id="cancel-delete">Keep film</button
+        ><button class="danger" id="confirm-delete">Remove film</button>
+      </div>
+    </dialog>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </body>
+</html>
