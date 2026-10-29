@@ -33,7 +33,7 @@ Interaction choices: put the diary first; use consistent date/film/score columns
 
 ## Private accounts — implementation branch, 29 October 2026
 
-- Fourteen unit/domain/storage tests pass. Local Firebase integration uses Auth + Firestore emulators with only `demo-frame` resources: anonymous/unverified denial, owner CRUD, cross-user read/write/delete denial, invalid direct writes, stale revisions, atomic repeatable imports, sign-out/sign-in and reset requests. Independent-session sync is also covered.
+- Seventeen unit/domain/storage/build-boundary tests pass. Local Firebase integration uses Auth + Firestore emulators with only `demo-frame` resources: anonymous/unverified denial, owner CRUD, cross-user read/write/delete denial, invalid direct writes, stale revisions, atomic repeatable imports, sign-out/sign-in and reset requests. Independent-session sync is also covered.
 - Browser preview on a fresh localhost origin verified synthetic signup, unverified-account blocking, email action verification through the local emulator, explicit import naming the account, reload persistence, sign-out, a second isolated diary, and private-record clearing between users. Original guest films remained in the browser. No real email was sent.
 - Production Firebase login, provider quotas/plan, live rules and real email delivery are not yet verified because Firebase requires owner sign-in/setup. The account branch must remain undeployed until that setup is complete.
 - Runtime dependency audit is clear after the scoped gRPC override; five moderate CLI-only development advisories remain and are documented in accounts.md. No global runtime or permissions were modified.
