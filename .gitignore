@@ -1,3 +1,9 @@
 .DS_Store
 node_modules/
 coverage/
+.firebase/
+.firebase-web.json
+*-debug.log
+*-debug.log.*
+dist/vendor/
+dist/account-config.js

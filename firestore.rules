@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) {
+      return request.auth != null && request.auth.uid == uid && request.auth.token.email_verified == true;
+    }
+    function validFilm(id) {
+      let f = request.resource.data;
+      return f.keys().hasAll(['id','title','genre','score','watched','review','revision','updatedAt'])
+        && f.keys().hasOnly(['id','title','genre','score','watched','review','revision','updatedAt'])
+        && f.id == id && f.id is string && f.id.matches('^[A-Za-z0-9_-]{1,128}$')
+        && f.title is string && f.title.size() > 0 && f.title.size() <= 120
+        && f.genre in ['Action','Adventure','Animation','Comedy','Crime','Documentary','Drama','Fantasy','Horror','Mystery','Romance','Sci-Fi','Thriller','Other']
+        && f.score is number && f.score >= 0 && f.score <= 10 && f.score * 10 == math.round(f.score * 10)
+        && f.watched is string && f.watched.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$')
+        && f.review is string && f.review.size() > 0 && f.review.size() <= 600
+        && f.revision is int && f.revision > 0
+        && f.updatedAt == request.time;
+    }
+    match /users/{uid}/films/{id} {
+      allow read, delete: if owner(uid);
+      allow create: if owner(uid) && validFilm(id) && request.resource.data.revision == 1;
+      allow update: if owner(uid) && validFilm(id) && request.resource.data.revision == resource.data.revision + 1;
+    }
+    // All other documents are denied, including unauthenticated access and other users' data.
+  }
+}
