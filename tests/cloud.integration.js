@@ -238,6 +238,9 @@ test(
           await a.signIn(emailA, password);
           assert.equal(current(nameA).uid, uidA);
           await a.resetPassword(emailA);
+          await assert.doesNotReject(
+            a.resetPassword(`missing-${suffix}@example.test`),
+          );
           const links = await (
             await fetch(
               "http://127.0.0.1:9099/emulator/v1/projects/demo-frame/oobCodes",

@@ -91,7 +91,13 @@ export async function createAccountService(
         return { verificationSent: false };
       }
     },
-    resetPassword: (email) => sendPasswordResetEmail(auth, email),
+    async resetPassword(email) {
+      try {
+        await sendPasswordResetEmail(auth, email);
+      } catch (error) {
+        if (error.code !== "auth/user-not-found") throw error;
+      }
+    },
     signOut: () => signOut(auth),
     resendVerification() {
       if (!auth.currentUser) throw new Error("Sign in first.");

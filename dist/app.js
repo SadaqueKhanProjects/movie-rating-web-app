@@ -107,6 +107,7 @@ function setAccountUser(user) {
   for (const id of ["film-dialog", "delete-dialog", "import-dialog"])
     if ($("#" + id).open) $("#" + id).close();
   form.reset();
+  setWriteBusy(false);
   $("#import-description").textContent = "";
   $("#delete-description").textContent = "";
   $("#storage-error").hidden = true;
@@ -227,6 +228,12 @@ $("#auth-form").onsubmit = async (event) => {
     return;
   }
   authBusy = true;
+  $("#auth-submit").textContent =
+    authMode === "signin"
+      ? "Signing in…"
+      : authMode === "signup"
+        ? "Creating account…"
+        : "Sending…";
   $("#auth-submit").disabled = true;
   $("#auth-close").disabled = true;
   try {
@@ -260,6 +267,12 @@ $("#auth-form").onsubmit = async (event) => {
   } finally {
     authBusy = false;
     $("#auth-submit").disabled = false;
+    $("#auth-submit").textContent =
+      authMode === "signin"
+        ? "Sign in"
+        : authMode === "signup"
+          ? "Create account"
+          : "Send reset email";
     $("#auth-close").disabled = false;
     updateAccountControls();
   }
@@ -314,6 +327,12 @@ $("#verification-check").onclick = async () => {
 };
 function setWriteBusy(value) {
   writeBusy = value;
+  form.querySelector('button[type="submit"]').textContent =
+    value && dialog.open ? "Saving…" : "Save film";
+  $("#confirm-delete").textContent =
+    value && $("#delete-dialog").open ? "Removing…" : "Remove film";
+  $("#import-confirm").textContent =
+    value && $("#import-dialog").open ? "Importing…" : "Import films";
   document
     .querySelectorAll(
       "#film-dialog button, #delete-dialog button, #import-dialog button",
