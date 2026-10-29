@@ -43,7 +43,10 @@ if (config) {
   )
     throw new Error("Only public Firebase web configuration may be bundled.");
 }
-if (process.env.FRAME_REQUIRE_ACCOUNTS === "true" && !config)
+if (
+  process.env.FRAME_REQUIRE_ACCOUNTS === "true" &&
+  (!config || emulator || config.projectId.startsWith("demo-"))
+)
   throw new Error(
     "Production account deployment requires FRAME_FIREBASE_CONFIG.",
   );

@@ -838,3 +838,101 @@ textarea,
     column-gap: 8px;
   }
 }
+
+.account-controls {
+  margin-left: auto;
+  position: relative;
+}
+.topbar > .add-button {
+  margin-left: 0;
+}
+.account-controls > .secondary {
+  font-size: 12px;
+  padding: 8px 13px;
+}
+#account-menu summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  font-size: 12px;
+  list-style: none;
+}
+#account-menu summary::-webkit-details-marker {
+  display: none;
+}
+.account-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  z-index: 4;
+  width: 230px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px #0006;
+}
+.account-dropdown p {
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.account-dropdown button {
+  min-height: 44px;
+  background: transparent;
+  color: var(--text);
+  padding: 8px 0;
+}
+.account-intro,
+#import-dialog > p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0 0 20px;
+}
+.auth-switch {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+}
+#auth-reset {
+  margin-right: auto;
+}
+#verify-notice > div {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+#verify-notice button {
+  white-space: normal;
+}
+@media (max-width: 700px) {
+  .topbar {
+    gap: 10px;
+  }
+  .app-description {
+    display: none;
+  }
+  .brand {
+    font-size: 15px;
+    letter-spacing: 2px;
+    gap: 7px;
+  }
+  .brand svg {
+    width: 21px;
+    height: 21px;
+  }
+  .topbar > .add-button {
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+  .account-controls > .secondary {
+    padding: 8px 10px;
+  }
+  .account-dropdown {
+    right: -45px;
+  }
+}

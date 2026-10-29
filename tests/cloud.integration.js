@@ -193,6 +193,22 @@ test(
         },
       );
       await t.test(
+        "independent sessions sync the same owner and reject stale writes",
+        async () => {
+          await b.signOut();
+          await b.signIn(emailA, password);
+          await b.putFilm(uidA, { ...film, score: 9 }, 2);
+          assert.equal(
+            (await list(a, uidA)).find((x) => x.id === film.id).score,
+            9,
+          );
+          await assert.rejects(
+            a.putFilm(uidA, { ...film, score: 4 }, 2),
+            /another device/,
+          );
+        },
+      );
+      await t.test(
         "import is repeatable and conflicts preserve every original",
         async () => {
           const local = fixture();
@@ -232,7 +248,7 @@ test(
               (x) => x.email === emailA && x.requestType === "PASSWORD_RESET",
             ),
           );
-          await a.removeFilm(uidA, { ...film, revision: 2 });
+          await a.removeFilm(uidA, { ...film, revision: 3 });
           assert.equal(
             (await list(a, uidA)).some((x) => x.id === film.id),
             false,

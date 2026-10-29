@@ -29,3 +29,11 @@ Source formatting used Prettier 3.6.2 from the npm registry in an isolated tempo
 - The service-worker cache version was advanced for the redesigned shell. The browser loaded the updated interface without clearing localStorage. No new dependencies, remote workflows or deployment were introduced.
 
 Interaction choices: put the diary first; use consistent date/film/score columns for scanning; reveal secondary filters and entry actions on demand; keep field labels visible; make action targets at least 44px; provide visible keyboard focus, Escape behavior and logical focus restoration; preserve confirmation for destructive removal. These are design decisions validated by the interactions above, not a user research study.
+
+
+## Private accounts — implementation branch, 29 October 2026
+
+- Fourteen unit/domain/storage tests pass. Local Firebase integration uses Auth + Firestore emulators with only `demo-frame` resources: anonymous/unverified denial, owner CRUD, cross-user read/write/delete denial, invalid direct writes, stale revisions, atomic repeatable imports, sign-out/sign-in and reset requests. Independent-session sync is also covered.
+- Browser preview on a fresh localhost origin verified synthetic signup, unverified-account blocking, email action verification through the local emulator, explicit import naming the account, reload persistence, sign-out, a second isolated diary, and private-record clearing between users. Original guest films remained in the browser. No real email was sent.
+- Production Firebase login, provider quotas/plan, live rules and real email delivery are not yet verified because Firebase requires owner sign-in/setup. The account branch must remain undeployed until that setup is complete.
+- Runtime dependency audit is clear after the scoped gRPC override; five moderate CLI-only development advisories remain and are documented in accounts.md. No global runtime or permissions were modified.

@@ -37,6 +37,16 @@
         >FRAME</a
       >
       <span class="app-description">The watch diary</span>
+      <div class="account-controls">
+        <button class="secondary" id="signin-button">Sign in</button>
+        <details id="account-menu" hidden>
+          <summary>Account</summary>
+          <div class="account-dropdown">
+            <p id="account-email"></p>
+            <button id="signout-button">Sign out</button>
+          </div>
+        </details>
+      </div>
       <button class="primary add-button">
         <span aria-hidden="true">＋</span> Log a film
       </button>
@@ -62,6 +72,18 @@
             <dd id="month">0</dd>
           </div>
         </dl>
+      </div>
+      <div class="notice" id="account-status" role="status" hidden></div>
+      <div class="notice" id="verify-notice" hidden>
+        <span>Verify your email to open your private diary.</span>
+        <div>
+          <button id="verification-send">Resend email</button
+          ><button id="verification-check">I've verified my email</button>
+        </div>
+      </div>
+      <div class="notice" id="import-notice" hidden>
+        <span id="import-summary"></span
+        ><button id="import-open">Import browser films</button>
       </div>
       <div class="notice" id="demo-notice" hidden>
         <span
@@ -183,8 +205,8 @@
       </div>
       <footer>
         <p>
-          <span class="storage-dot" aria-hidden="true"></span>Saved in this
-          browser only
+          <span class="storage-dot" aria-hidden="true"></span
+          ><span id="storage-label">Saved in this browser only</span>
         </p>
         <button class="text-button" id="demo-toggle">
           View a sample diary
@@ -264,11 +286,82 @@
     <dialog id="delete-dialog" aria-labelledby="delete-title">
       <h2 id="delete-title">Remove this film?</h2>
       <p id="delete-description"></p>
-      <p>This removes the rating and review from this browser.</p>
+      <p id="delete-scope">
+        This removes the rating and review from this browser.
+      </p>
       <p id="delete-error" class="form-error" role="alert" hidden></p>
       <div class="form-actions">
         <button class="secondary" id="cancel-delete">Keep film</button
         ><button class="danger" id="confirm-delete">Remove film</button>
+      </div>
+    </dialog>
+    <dialog id="auth-dialog" aria-labelledby="auth-title">
+      <form id="auth-form">
+        <div class="dialog-heading">
+          <h2 id="auth-title">Sign in</h2>
+          <button
+            type="button"
+            class="icon-button"
+            id="auth-close"
+            aria-label="Close account form"
+          >
+            ×
+          </button>
+        </div>
+        <p class="account-intro" id="auth-description">
+          Open your private film diary on any device.
+        </p>
+        <label
+          >Email<input
+            id="auth-email"
+            type="email"
+            autocomplete="email"
+            required
+            maxlength="254"
+        /></label>
+        <label id="password-field"
+          >Password<input
+            id="auth-password"
+            type="password"
+            autocomplete="current-password"
+            required
+            maxlength="128"
+        /></label>
+        <label id="confirm-field" hidden
+          >Confirm password<input
+            id="auth-confirm"
+            type="password"
+            autocomplete="new-password"
+            maxlength="128"
+        /></label>
+        <p id="auth-message" class="form-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button type="button" class="text-button" id="auth-reset">
+            Forgot password?</button
+          ><button type="submit" class="primary" id="auth-submit">
+            Sign in
+          </button>
+        </div>
+        <button
+          type="button"
+          class="text-button auth-switch"
+          id="auth-mode-toggle"
+        >
+          Create an account
+        </button>
+      </form>
+    </dialog>
+    <dialog id="import-dialog" aria-labelledby="import-title">
+      <h2 id="import-title">Import browser films?</h2>
+      <p id="import-description"></p>
+      <p>
+        Films will be added to this account. The original browser copies will be
+        kept. Conflicting films will not be overwritten.
+      </p>
+      <p id="import-error" class="form-error" role="alert" hidden></p>
+      <div class="form-actions">
+        <button class="secondary" id="import-cancel">Cancel</button
+        ><button class="primary" id="import-confirm">Import films</button>
       </div>
     </dialog>
     <div class="toast" id="toast" role="status" hidden></div>

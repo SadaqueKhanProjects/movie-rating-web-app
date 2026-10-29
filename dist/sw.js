@@ -1,4 +1,4 @@
-const CACHE = "frame-shell-v4";
+const CACHE = "frame-shell-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,6 +6,11 @@ const ASSETS = [
   "./app.js",
   "./core.js",
   "./icon.svg",
+  "./account-config.js",
+  "./account-model.js",
+  "./vendor/accounts.js",
+  "./vendor/accounts.js.LEGAL.txt",
+  "./vendor/FIREBASE-LICENSE.txt",
 ];
 self.addEventListener("install", (event) =>
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS))),

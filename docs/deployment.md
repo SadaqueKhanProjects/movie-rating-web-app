@@ -2,11 +2,11 @@
 
 Production: https://sadaquekhanprojects.github.io/movie-rating-web-app/
 
-The owner authorized public repository visibility and GitHub Pages hosting on 29 October 2026. The source and commit history are public. Film entries stay in each visitor's browser; the workflow publishes static app files, not journal records. The hosted origin is different from localhost, so an existing local journal does not transfer automatically. No account, backend, subscription, custom domain or new deployment secret was added.
+The owner authorized public repository visibility and GitHub Pages hosting on 29 October 2026. The source and commit history are public. The workflow publishes static app files, not journal records. Guests keep browser-local films; the account branch adds private Firebase storage only after its separate backend setup is verified. The hosted origin is different from localhost, so an existing local journal does not transfer automatically. No account, backend, subscription, custom domain or new deployment secret was added.
 
 ## Pipeline
 
-`.github/workflows/pages.yml` runs on PRs targeting `main`, pushes to `main`, and manual dispatch. `Validate` uses Node 24 to run `npm run check` and `npm test`; there is no dependency installation or build. On `main`, it uploads only `dist/` as a Pages artifact with one-day retention. The deployment job depends on successful validation and deploys that same artifact through GitHub's `github-pages` environment. A PR cannot deploy, and a manual run on another branch cannot deploy. Failed validation leaves the last successful production deployment in place.
+`.github/workflows/pages.yml` runs on PRs targeting `main`, pushes to `main`, and manual dispatch. `Validate` uses Node 24 plus Java 21, installs locked dependencies, builds the account client, and runs syntax/unit checks plus local Auth/Firestore emulator integration tests. On `main`, it uploads only `dist/` as a Pages artifact with one-day retention. The deployment job depends on successful validation and deploys that same artifact through GitHub's `github-pages` environment. A PR cannot deploy, and a manual run on another branch cannot deploy. Failed validation leaves the last successful production deployment in place.
 
 The workflow uses standard `ubuntu-24.04` runners, SHA-pinned official actions, no package cache, a read-only validation token and only Pages/OIDC write permissions for deployment. Both jobs skip when the event reports the repository as private. This guard helps prevent running these jobs under private-repository billing; it is not an account-wide spending limit and cannot protect a future edited workflow or another repository.
 
@@ -30,3 +30,8 @@ Verified against GitHub documentation on 29 October 2026:
 5. For rollback, revert the faulty change through a PR and use a new cache version. Merging the revert runs the same validation and deployment process. Re-running a previously successful workflow can redeploy its old revision, so use it only for an intentional rollback.
 
 If a Pages artifact has expired, a manual run from `main` creates a fresh one. A hosting outage does not delete journal records: the cached app can continue offline after a successful first load, subject to browser support and retained storage. Records have no cloud sync or backup.
+
+
+## Account rollout gate
+
+The account branch adds a public Actions variable `FRAME_FIREBASE_CONFIG` and a main-build gate requiring non-demo configuration. Cloud rules are deployed separately; Pages/OIDC permissions do not authorize Firebase administration. Do not merge or activate account code until the project plan, provider configuration and owner-only rules are verified. See [accounts](accounts.md). Existing guest records remain separate and are never published by CI.
